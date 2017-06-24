@@ -39,7 +39,7 @@ from keras.layers import Dense, Dropout, Flatten
 
 FLAGS = gflags.FLAGS
 
-gflags.DEFINE_string('optimzer', '', 'optimizer function to optimize the loss function')
+gflags.DEFINE_string('optimizer', '', 'optimizer function to optimize the loss function')
 
 def generateData(samples, max_string_length = 100):
     data = []
@@ -73,6 +73,7 @@ def TrainAndTestModel():
     model = Sequential()
     model.add(Dense(MAX_LENGTH_OF_STRING, input_shape=[MAX_LENGTH_OF_STRING, 27], activation='relu'))
     model.add(Dropout(0.25))
+
     model.add(Flatten())
     model.add(Dense(MAX_LENGTH_OF_STRING + 1, activation='softmax'))
     model.compile(loss='categorical_crossentropy', 
