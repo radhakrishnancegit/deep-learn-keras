@@ -10,18 +10,18 @@ Results:
 epoch_size: 100
 batch_size: 100
 
-python count_vowels_mlp.py --optimzer=adam
-Optimzer function: adam (Why adam works better than others?)
+python count_vowels_mlp.py --optimizer=adam
+Optimizer function: adam (Why adam works better than others?)
 Time taken to train the model with single core GPU: 269.73893404 seconds
 Test Accuracy : 0.9457
 
-python count_vowels_mlp.py --optimzer=rmsprop
-Optimzer function: rmsprop
+python count_vowels_mlp.py --optimizer=rmsprop
+Optimizer function: rmsprop
 Time taken to train the model with single core GPU: 256.734019041 seconds
 Test Accuracy : 0.8693
 
-python count_vowels_mlp.py --optimzer=sgd
-Optimzer function: sgd
+python count_vowels_mlp.py --optimizer=sgd
+Optimizer function: sgd
 Time taken 241.566617012
 Test Accuracy : 0.7149
 
@@ -71,15 +71,20 @@ def TrainAndTestModel():
     test_one_hot_labels = to_categorical(test_labels, num_classes=MAX_LENGTH_OF_STRING + 1)
     
     model = Sequential()
+
+    model.add(Dense(MAX_LENGTH_OF_STRING, input_shape=[MAX_LENGTH_OF_STRING, 27], activation='relu'))
+    model.add(Dropout(0.25))
+
+    # Adding extra Dense layer didn't help :-/
     model.add(Dense(MAX_LENGTH_OF_STRING, input_shape=[MAX_LENGTH_OF_STRING, 27], activation='relu'))
     model.add(Dropout(0.25))
 
     model.add(Flatten())
     model.add(Dense(MAX_LENGTH_OF_STRING + 1, activation='softmax'))
     model.compile(loss='categorical_crossentropy', 
-                  optimizer=FLAGS.optimzer,
+                  optimizer=FLAGS.optimizer,
                   metrics=['accuracy'])
-    
+
     print(model.summary())
     print(train_input.shape)
     print(train_one_hot_labels.shape)
@@ -87,7 +92,7 @@ def TrainAndTestModel():
     train_start_time = time.time()
     model.fit(train_input, train_one_hot_labels, epochs=100, batch_size=100)
     print("Time taken " + str(time.time() - train_start_time))
-    print("Optimzer function: " + FLAGS.optimzer)
+    print("Optimizer function: " + FLAGS.optimizer)
     print("Test Accuracy : " + str(model.evaluate(test_input, test_one_hot_labels)[1]))
 
 
